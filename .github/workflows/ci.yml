@@ -1,0 +1,15 @@
+name: Ubuntu CI test 
+run-name: Running test build
+on: [pull_request]
+jobs:
+   Build-Ubuntu:
+      runs-on: ubuntu-latest
+      steps:
+         - name: Check out repository code
+           uses: actions/checkout@v4
+         - name: Install Ubuntu legacy build dependencies
+           run:  sudo legacy/setup-ubuntu.sh
+         - name: CMake configure
+           run:  cmake -S . -B BUILD -C FairSoftConfig.cmake
+         - name: CMake build
+           run:  cmake --build BUILD
