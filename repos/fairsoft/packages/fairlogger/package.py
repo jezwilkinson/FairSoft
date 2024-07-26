@@ -17,6 +17,9 @@ class Fairlogger(CMakePackage):
     generator = 'Ninja'
 
     version('develop', branch='dev', get_full_repo=True)
+    version('1.11.1', tag='v1.11.1', commit='56b90a7445dcdaa85bf92a89905df0bf72796cb0', no_cache=True) 
+    version('1.10.4', tag='v1.10.4', commit='9a6644c9316ad6ce5350364599fccd4e7d6536e3', no_cache=True) 
+    version('1.9.3', tag='v1.9.3', commit='13ebedca3d66e8e07e1481028c36dc19334e4b4e', no_cache=True)
     version('1.9.1', tag='v1.9.1', commit='340b005997a80f94c2acc7a749e80732b2868a94', no_cache=True)
     version('1.9.0', tag='v1.9.0', commit='bcfe438862edc4047131a282c5e72a77d0b0d78c', no_cache=True)
     version('1.8.0', tag='v1.8.0', commit='56780689fca5560cf3e59d5c156b0adb6d1622f9', no_cache=True)
@@ -37,7 +40,7 @@ class Fairlogger(CMakePackage):
             multi=False,
             description='CMake build type')
     variant('cxxstd', default='default',
-            values=('default', '11', '14', '17'),
+            values=('default', conditional('11', when='@:1.9'), '14', '17', '20'),
             multi=False,
             description='Use the specified C++ standard when building.')
     variant('pretty',

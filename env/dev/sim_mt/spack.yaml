@@ -6,7 +6,6 @@ spack:
   - fairsoft-bundle@master +graphics+mt
   - fairroot+sim+examples
   - odc
-  concretization: together
   view: false
   packages:
     all:
@@ -15,3 +14,5 @@ spack:
       variants: ~llvm
     mesa18:
       variants: ~llvm
+  concretizer:
+    unify: true

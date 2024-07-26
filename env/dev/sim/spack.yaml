@@ -2,11 +2,10 @@ spack:
   specs:
   - pythia6@428-alice1
   - hepmc@2.06.11 length=CM momentum=GEV
-  - geant4@10.7.1~threads
+  - geant4@11.2.0~threads
   - fairsoft-bundle@master +graphics
   - fairroot+sim+examples
   - odc
-  concretization: together
   view: false
   packages:
     all:
@@ -15,3 +14,5 @@ spack:
       variants: ~llvm
     mesa18:
       variants: ~llvm
+  concretizer:
+    unify: true

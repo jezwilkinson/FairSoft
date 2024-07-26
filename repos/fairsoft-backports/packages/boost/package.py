@@ -25,6 +25,15 @@ class Boost(Package):
     maintainers = ['hainest']
 
     version('develop', branch='develop', submodules=True)
+    version("1.85.0", sha256="7009fe1faa1697476bdc7027703a2badb84e849b7b0baad5086b087b971f8617")
+    version("1.84.0", sha256="cc4b893acf645c9d4b698e9a0f08ca8846aa5d6c68275c14c3e7949c24109454")
+    version("1.83.0", sha256="6478edfe2f3305127cffe8caf73ea0176c53769f4bf1585be237eb30798c3b8e")
+    version("1.82.0", sha256="a6e1ab9b0860e6a2881dd7b21fe9f737a095e5f33a3a874afc6a345228597ee6")
+    version("1.81.0", sha256="71feeed900fbccca04a3b4f2f84a7c217186f28a940ed8b7ed4725986baf99fa")
+    version("1.80.0", sha256="1e19565d82e43bc59209a168f5ac899d3ba471d55c7610c677d4ccf2c9c500c0")
+    version("1.79.0", sha256="475d589d51a7f8b3ba2ba4eda022b170e562ca3b760ee922c146b6c65856ef39")
+    version("1.78.0", sha256="8681f175d4bdb26c52222665793eef08490d7758529330f98d3b29dd0735bccc")
+    version("1.77.0", sha256="fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854")
     version('1.76.0', sha256='f0397ba6e982c4450f27bf32a2a83292aba035b827a5623a14636ea583318c41')
     version('1.75.0', sha256='953db31e016db7bb207f11432bef7df100516eeb746843fa0486a222e3fd49cb')
     version('1.74.0', sha256='83bfc1507731a0906e387fc28b7ef5417d591429e51e788417fe9ff025e116b1')
@@ -129,7 +138,18 @@ class Boost(Package):
 
     variant('cxxstd',
             default='98',
-            values=('98', '11', '14', '17', '2a'),
+            values=(
+                "98",
+                "11",
+                "14",
+                # C++17 is not supported by Boost < 1.63.0.
+                conditional("17", when="@1.63.0:"),
+                # C++20/2a is not supported by Boost < 1.73.0
+                conditional("2a", when="@1.73.0:"),
+                conditional("20", when="@1.77.0:"),
+                conditional("23", when="@1.79.0:"),
+                conditional("26", when="@1.79.0:"),
+            ),
             multi=False,
             description='Use the specified C++ standard when building.')
     variant('debug', default=False,
@@ -170,7 +190,7 @@ class Boost(Package):
     depends_on('python', when='+python')
     depends_on('mpi', when='+mpi')
     depends_on('bzip2', when='+iostreams')
-    depends_on('zlib', when='+iostreams')
+    depends_on('zlib-api', when='+iostreams')
     depends_on('py-numpy', when='+numpy', type=('build', 'run'))
 
     # Coroutine, Context, Fiber, etc., are not straightforward.
@@ -272,6 +292,12 @@ class Boost(Package):
     # and https://github.com/spack/spack/pull/21408
     patch("bootstrap-toolset.patch", when="@1.75")
 
+    # Fix compiler used for building bjam during bootstrap
+    patch("bootstrap-compiler.patch", when="@1.76:")
+
+    # https://www.intel.com/content/www/us/en/developer/articles/technical/building-boost-with-oneapi.html
+    patch("intel-oneapi-linux-jam.patch", when="@1.76: %oneapi")
+
     def patch(self):
         # Disable SSSE3 and AVX2 when using the NVIDIA compiler
         if self.spec.satisfies('%nvhpc'):
@@ -293,9 +319,16 @@ class Boost(Package):
 
         return url.format(version.dotted, version.underscored)
 
+    def flag_handler(self, name, flags):
+        if name == "cxxflags":
+            if self.spec.satisfies("@1.79.0 %oneapi"):
+                flags.append("-Wno-error=enum-constexpr-conversion")
+        return (flags, None, None)
+
     def determine_toolset(self, spec):
         toolsets = {'g++': 'gcc',
                     'icpc': 'intel',
+                    'icpx': 'intel',
                     'clang++': 'clang',
                     'armclang++': 'clang',
                     'xlc++': 'xlcpp',
@@ -306,6 +339,7 @@ class Boost(Package):
 
         if spec.satisfies('@1.47:'):
             toolsets['icpc'] += '-linux'
+            toolsets['icpx'] += '-linux'
         for cc, toolset in toolsets.items():
             if cc in self.compiler.cxx_names:
                 return toolset
@@ -387,8 +421,8 @@ class Boost(Package):
             options.extend([
                 '-s', 'BZIP2_INCLUDE=%s' % spec['bzip2'].prefix.include,
                 '-s', 'BZIP2_LIBPATH=%s' % spec['bzip2'].prefix.lib,
-                '-s', 'ZLIB_INCLUDE=%s' % spec['zlib'].prefix.include,
-                '-s', 'ZLIB_LIBPATH=%s' % spec['zlib'].prefix.lib,
+                '-s', 'ZLIB_INCLUDE=%s' % spec['zlib-api'].prefix.include,
+                '-s', 'ZLIB_LIBPATH=%s' % spec['zlib-api'].prefix.lib,
                 '-s', 'NO_LZMA=1',
                 '-s', 'NO_ZSTD=1'])
 
@@ -420,10 +454,14 @@ class Boost(Package):
             '--layout=%s' % layout
         ])
 
-        if not spec.satisfies('%intel'):
-            options.extend([
-                'toolset=%s' % self.determine_toolset(spec)
-            ])
+        if not spec.satisfies("@:1.75 %intel") and not spec.satisfies("platform=windows"):
+            # When building any version >= 1.76, the toolset must be specified.
+            # Earlier versions could not specify Intel as the toolset
+            # as that was considered to be redundant/conflicting with
+            # --with-toolset in bootstrap.
+            # (although it is not currently known if 1.76 is the earliest
+            # version that requires specifying the toolset for Intel)
+            options.extend(["toolset=%s" % self.determine_toolset(spec)])
 
         # Other C++ flags.
         cxxflags = []
@@ -442,7 +480,7 @@ class Boost(Package):
 
         # clang is not officially supported for pre-compiled headers
         # and at least in clang 3.9 still fails to build
-        #   http://www.boost.org/build/doc/html/bbv2/reference/precompiled_headers.html
+        #   https://www.boost.org/build/doc/html/bbv2/reference/precompiled_headers.html
         #   https://svn.boost.org/trac/boost/ticket/12496
         if (spec.satisfies('%apple-clang') or
                 spec.satisfies('%clang') or
@@ -529,6 +567,14 @@ class Boost(Package):
 
         bootstrap(*bootstrap_options)
 
+        # strip the toolchain to avoid double include errors (intel) or
+        # user-config being overwritten (again intel, but different boost version)
+        filter_file(
+            r"^\s*using {0}.*".format(self.determine_toolset(spec)),
+            "",
+            os.path.join(self.stage.source_path, "project-config.jam"),
+        )
+
         # b2 used to be called bjam, before 1.47 (sigh)
         b2name = './b2' if spec.satisfies('@1.47:') else './bjam'
 
@@ -545,6 +591,10 @@ class Boost(Package):
         ]
 
         threading_opts = self.determine_b2_options(spec, b2_options)
+
+        # Create headers if building from a git checkout
+        if "@develop" in spec:
+            b2("headers", *b2_options)
 
         b2('--clean', *b2_options)
 
@@ -570,9 +620,18 @@ class Boost(Package):
         # and https://cmake.org/cmake/help/latest/module/FindBoost.html
         is_cmake = isinstance(dependent_spec.package, CMakePackage)
         if self.spec.satisfies('boost@:1.69.0') and is_cmake:
-            args_fn = type(dependent_spec.package).cmake_args
+            args_fn = type(dependent_spec.package.builder).cmake_args
 
             def _cmake_args(self):
                 return ['-DBoost_NO_BOOST_CMAKE=ON'] + args_fn(self)
 
-            type(dependent_spec.package).cmake_args = _cmake_args
+            type(dependent_spec.package.builder).cmake_args = _cmake_args
+
+    def setup_dependent_build_environment(self, env, dependent_spec):
+        if "+context" in self.spec and "context-impl" in self.spec.variants:
+            context_impl = self.spec.variants["context-impl"].value
+            # fcontext, as the default, has no corresponding macro
+            if context_impl == "ucontext":
+                env.append_flags("CXXFLAGS", "-DBOOST_USE_UCONTEXT")
+            elif context_impl == "winfib":
+                env.append_flags("CXXFLAGS", "-DBOOST_USE_WINFIB")

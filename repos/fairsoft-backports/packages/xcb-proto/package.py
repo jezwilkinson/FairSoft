@@ -12,6 +12,10 @@ class XcbProto(AutotoolsPackage):
 
     homepage = "http://xcb.freedesktop.org/"
     url      = "https://xorg.freedesktop.org/archive/individual/proto/xcb-proto-1.14.1.tar.xz"
+    
+
+    version("1.16.0", sha256="a75a1848ad2a89a82d841a51be56ce988ff3c63a8d6bf4383ae3219d8d915119")
+    version("1.15.2", sha256="7072beb1f680a2fe3f9e535b797c146d22528990c72f63ddb49d2f350a3653ed")
 
     version('1.14.1', sha256='f04add9a972ac334ea11d9d7eb4fc7f8883835da3e4859c9afa971efdf57fcc3')
     version('1.14', sha256='186a3ceb26f9b4a015f5a44dcc814c93033a5fc39684f36f1ecc79834416a605')
@@ -21,7 +25,7 @@ class XcbProto(AutotoolsPackage):
 
     # TODO: uncomment once build deps can be resolved separately
     # See #7646, #4145, #4063, and #2548 for details
-    # extends('python')
+    extends('python')
 
     patch('xcb-proto-1.12-schema-1.patch', when='@1.12')
 

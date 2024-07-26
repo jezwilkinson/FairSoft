@@ -19,6 +19,8 @@ class Dds(CMakePackage):
     git = "https://github.com/FairRootGroup/DDS"
     maintainers = ['dennisklein', 'ChristianTackeGSI']
 
+    version('3.10', commit='27ef6e4ea9b75620918c5f149c6d8222a7524cf9', no_cache=True)
+    version('3.8', commit='a27d9a6204c3f8a530dfcfa561509babebb7991d', no_cache=True)
     version('3.6', commit='c71f8df77766c052441f8f3a89e948755a07c2a2', no_cache=True)
     version('3.5.16', commit='2bb197d7080521c81f35b8e75dbadecc40f7cc8b', no_cache=True)
     version('3.5.14', commit='85aee1f7e34d3648cd6c5fb7439f0482583031a0', no_cache=True)

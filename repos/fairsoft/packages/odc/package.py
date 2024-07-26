@@ -17,6 +17,7 @@ class Odc(CMakePackage):
     generator = 'Ninja'
 
     version('develop', branch='master', get_full_repo=True)
+    version('0.82.0', tag='0.82.0', commit='0dd0027941179edf6e1a12d1f864e8898e2525df', no_cache=True)
     version('0.34', tag='0.34', commit='dee7bb0c4063f8bd51bea8f53215d224184c9b29', no_cache=True)
     version('0.28', tag='0.28', commit='bde3ffd670af62b4ffd3b361904e37f580be22fe', no_cache=True)
     version('0.18', tag='0.18', commit='02be2c613f7e794cac9fbbdb0af22e9dc5b59f4d', no_cache=True)
@@ -26,6 +27,7 @@ class Odc(CMakePackage):
     # See: https://github.com/FairRootGroup/ODC/commit/1618b38c12c9114268c9bce550e9e01e7015a040
     patch('fix_protoc_args.patch', when='@:0.12')
 
+    depends_on('faircmakemodules', type='build')
     depends_on('boost@1.67: +log+thread+program_options+filesystem+system+regex')
     conflicts('^boost@1.70:', when='^cmake@:3.14')
     depends_on('protobuf +shared')
@@ -43,6 +45,8 @@ class Odc(CMakePackage):
 
     def cmake_args(self):
         args = []
+#        args.append('-DBUILD_EXAMPLES=OFF')
+#        args.append('-DBUILD_TESTS=OFF')
         if self.spec.satisfies('^boost@:1.69.99'):
             args.append('-DBoost_NO_BOOST_CMAKE=ON')
         return args

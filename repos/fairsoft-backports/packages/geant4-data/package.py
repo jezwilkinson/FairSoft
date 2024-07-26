@@ -17,6 +17,12 @@ class Geant4Data(BundlePackage):
 
     tags = ['hep']
 
+    version("11.2.0")
+    version("11.1.0")
+    version("11.0.0")
+    version("10.7.4")
+    version("10.7.3")
+    version("10.7.2")
     version('10.7.1')
     version('10.7.0')
     version('10.6.3')
@@ -35,77 +41,131 @@ class Geant4Data(BundlePackage):
     # they generally don't change on the patch level
     # Can move to declaring on a dataset basis if needed
     # geant4@10.7.X
-    depends_on("g4ndl@4.6", when='@10.7.0:10.7.9999')
-    depends_on("g4emlow@7.13", when='@10.7.0:10.7.9999')
-    depends_on("g4photonevaporation@5.7", when='@10.7.0:10.7.9999')
-    depends_on("g4radioactivedecay@5.6", when='@10.7.0:10.7.9999')
-    depends_on("g4particlexs@3.1.1", when='@10.7.1:10.7.9999')
-    depends_on("g4particlexs@3.1", when='@10.7.0:10.7.0')
-    depends_on("g4pii@1.3", when='@10.7.0:10.7.9999')
-    depends_on("g4realsurface@2.2", when='@10.7.0:10.7.9999')
-    depends_on("g4saiddata@2.0", when='@10.7.0:10.7.9999')
-    depends_on("g4abla@3.1", when='@10.7.0:10.7.9999')
-    depends_on("g4incl@1.0", when='@10.7.0:10.7.9999')
-    depends_on("g4ensdfstate@2.3", when='@10.7.0:10.7.9999')
 
-    # geant4@10.6.X
-    depends_on("g4ndl@4.6", when='@10.6.0:10.6.9999')
-    depends_on("g4emlow@7.9", when='@10.6.0')
-    depends_on("g4emlow@7.9.1", when='@10.6.1:10.6.9999')
-    depends_on("g4photonevaporation@5.5", when='@10.6.0:10.6.9999')
-    depends_on("g4radioactivedecay@5.4", when='@10.6.0:10.6.9999')
-    depends_on("g4particlexs@2.1", when='@10.6.0:10.6.9999')
-    depends_on("g4pii@1.3", when='@10.6.0:10.6.9999')
-    depends_on("g4realsurface@2.1.1", when='@10.6.0:10.6.9999')
-    depends_on("g4saiddata@2.0", when='@10.6.0:10.6.9999')
-    depends_on("g4abla@3.1", when='@10.6.0:10.6.9999')
-    depends_on("g4incl@1.0", when='@10.6.0:10.6.9999')
-    depends_on("g4ensdfstate@2.2", when='@10.6.0:10.6.9999')
+    
+    _datasets = {
+        "11.2.0:11.2": [
+            "g4ndl@4.7",
+            "g4emlow@8.5",
+            "g4photonevaporation@5.7",
+            "g4radioactivedecay@5.6",
+            "g4particlexs@4.0",
+            "g4pii@1.3",
+            "g4realsurface@2.2",
+            "g4saiddata@2.0",
+            "g4abla@3.3",
+            "g4incl@1.2",
+            "g4ensdfstate@2.3",
+        ],
+        "11.1.0:11.1": [
+            "g4ndl@4.7",
+            "g4emlow@8.2",
+            "g4photonevaporation@5.7",
+            "g4radioactivedecay@5.6",
+            "g4particlexs@4.0",
+            "g4pii@1.3",
+            "g4realsurface@2.2",
+            "g4saiddata@2.0",
+            "g4abla@3.1",
+            "g4incl@1.0",
+            "g4ensdfstate@2.3",
+        ],
+        "11.0.0:11.0": [
+            "g4ndl@4.6",
+            "g4emlow@8.0",
+            "g4photonevaporation@5.7",
+            "g4radioactivedecay@5.6",
+            "g4particlexs@4.0",
+            "g4pii@1.3",
+            "g4realsurface@2.2",
+            "g4saiddata@2.0",
+            "g4abla@3.1",
+            "g4incl@1.0",
+            "g4ensdfstate@2.3",
+        ],
+        "10.7.0:10.7": [
+            "g4ndl@4.6",
+            "g4emlow@7.13",
+            "g4photonevaporation@5.7",
+            "g4radioactivedecay@5.6",
+            "g4pii@1.3",
+            "g4realsurface@2.2",
+            "g4saiddata@2.0",
+            "g4abla@3.1",
+            "g4incl@1.0",
+            "g4ensdfstate@2.3",
+        ],
+        "10.7.1:10.7": ["g4particlexs@3.1.1"],
+        "10.7.0": ["g4particlexs@3.1"],
+        "10.6.0:10.6": [
+            "g4ndl@4.6",
+            "g4emlow@7.9.1",
+            "g4photonevaporation@5.5",
+            "g4radioactivedecay@5.4",
+            "g4particlexs@2.1",
+            "g4pii@1.3",
+            "g4realsurface@2.1.1",
+            "g4saiddata@2.0",
+            "g4abla@3.1",
+            "g4incl@1.0",
+            "g4ensdfstate@2.2",
+        ],
+        "10.5.0:10.5": [
+            "g4ndl@4.5",
+            "g4emlow@7.7",
+            "g4photonevaporation@5.3",
+            "g4radioactivedecay@5.3",
+            "g4particlexs@1.1",
+            "g4pii@1.3",
+            "g4realsurface@2.1.1",
+            "g4saiddata@2.0",
+            "g4abla@3.1",
+            "g4incl@1.0",
+            "g4ensdfstate@2.2",
+        ],
+        "10.4.0:10.4": [
+            "g4ndl@4.5",
+            "g4emlow@7.3",
+            "g4photonevaporation@5.2",
+            "g4radioactivedecay@5.2",
+            "g4neutronxs@1.4",
+            "g4pii@1.3",
+            "g4saiddata@1.1",
+            "g4abla@3.1",
+            "g4ensdfstate@2.2",
+        ],
+        "10.4.2:10.4": ["g4realsurface@2.1.1"],
+        "10.4.0:10.4.1": ["g4realsurface@2.1"],
+        "10.3.0:10.3": [
+            "g4ndl@4.5",
+            "g4emlow@6.50",
+            "g4neutronxs@1.4",
+            "g4pii@1.3",
+            "g4realsurface@1.0",
+            "g4saiddata@1.1",
+            "g4abla@3.0",
+            "g4ensdfstate@2.1",
+        ],
+        "10.3.1:10.3": ["g4photonevaporation@4.3.2", "g4radioactivedecay@5.1.1"],
+        "10.3.0": ["g4photonevaporation@4.3", "g4radioactivedecay@5.1"],
+        "10.0.4": [
+            "g4ndl@4.4",
+            "g4emlow@6.35",
+            "g4photonevaporation@3.0",
+            "g4radioactivedecay@4.0",
+            "g4neutronxs@1.4",
+            "g4pii@1.3",
+            "g4realsurface@1.0",
+            "g4saiddata@1.1",
+            "g4abla@3.0",
+            "g4ensdfstate@1.0",
+        ],
+    }
 
-    # geant4@10.5.X
-    depends_on("g4ndl@4.5", when='@10.5.0:10.5.9999')
-    depends_on("g4emlow@7.7", when='@10.5.0:10.5.9999')
-    depends_on("g4photonevaporation@5.3", when='@10.5.0:10.5.9999')
-    depends_on("g4radioactivedecay@5.3", when='@10.5.0:10.5.9999')
-    depends_on("g4particlexs@1.1", when='@10.5.0:10.5.9999')
-    depends_on("g4pii@1.3", when='@10.5.0:10.5.9999')
-    depends_on("g4realsurface@2.1.1", when='@10.5.0:10.5.9999')
-    depends_on("g4saiddata@2.0", when='@10.5.0:10.5.9999')
-    depends_on("g4abla@3.1", when='@10.5.0:10.5.9999')
-    depends_on("g4incl@1.0", when='@10.5.0:10.5.9999')
-    depends_on("g4ensdfstate@2.2", when='@10.5.0:10.5.9999')
-
-    # geant4@10.4.X
-    depends_on("g4ndl@4.5", when='@10.4.0:10.4.9999')
-    depends_on("g4emlow@7.3", when='@10.4.0:10.4.9999')
-    depends_on("g4photonevaporation@5.2", when='@10.4.0:10.4.9999')
-    depends_on("g4radioactivedecay@5.2", when='@10.4.0:10.4.9999')
-    depends_on("g4neutronxs@1.4", when='@10.4.0:10.4.9999')
-    depends_on("g4pii@1.3", when='@10.4.0:10.4.9999')
-
-    depends_on("g4realsurface@2.1.1", when='@10.4.2:10.4.9999')
-    depends_on("g4realsurface@2.1", when='@10.4.0:10.4.1')
-
-    depends_on("g4saiddata@1.1", when='@10.4.0:10.4.9999')
-    depends_on("g4abla@3.1", when='@10.4.0:10.4.9999')
-    depends_on("g4ensdfstate@2.2", when='@10.4.0:10.4.9999')
-
-    # geant4@10.3.X
-    depends_on("g4ndl@4.5", when='@10.3.0:10.3.9999')
-    depends_on("g4emlow@6.50", when='@10.3.0:10.3.9999')
-
-    depends_on("g4photonevaporation@4.3.2", when='@10.3.1:10.3.9999')
-    depends_on("g4photonevaporation@4.3", when='@10.3.0')
-
-    depends_on("g4radioactivedecay@5.1.1", when='@10.3.1:10.3.9999')
-    depends_on("g4radioactivedecay@5.1", when='@10.3.0')
-
-    depends_on("g4neutronxs@1.4", when='@10.3.0:10.3.9999')
-    depends_on("g4pii@1.3", when='@10.3.0:10.3.9999')
-    depends_on("g4realsurface@1.0", when='@10.3.0:10.3.9999')
-    depends_on("g4saiddata@1.1", when='@10.3.0:10.3.9999')
-    depends_on("g4abla@3.0", when='@10.3.0:10.3.9999')
-    depends_on("g4ensdfstate@2.1", when='@10.3.0:10.3.9999')
+    for _vers, _dsets in _datasets.items():
+        _vers = "@" + _vers
+        for _d in _dsets:
+            depends_on(_d, type=("build", "run"), when=_vers)
 
     def install(self, spec, prefix):
         spec = self.spec

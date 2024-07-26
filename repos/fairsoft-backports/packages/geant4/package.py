@@ -3,8 +3,8 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack import *
-
+from spack.package import *
+from spack.variant import _ConditionalVariantValues
 
 class Geant4(CMakePackage):
     """Geant4 is a toolkit for the simulation of the passage of particles
@@ -19,6 +19,19 @@ class Geant4(CMakePackage):
 
     maintainers = ['drbenmorgan']
 
+    version("11.2.0", sha256="9ff544739b243a24dac8f29a4e7aab4274fc0124fd4e1c4972018213dc6991ee")
+    version("11.1.3", sha256="5d9a05d4ccf8b975649eab1d615fc1b8dce5937e01ab9e795bffd04149240db6")
+    version("11.1.2", sha256="e9df8ad18c445d9213f028fd9537e174d6badb59d94bab4eeae32f665beb89af")
+    version("11.1.1", sha256="c5878634da9ba6765ce35a469b2893044f4a6598aa948733da8436cdbfeef7d2")
+    version("11.1.0", sha256="c4a23f2f502efeab56de43a4412b21f65c7ca1b0877b9bc1d7e845ee12edf70a")
+    version("11.0.4", sha256="673fb409fd1f54b65b52ddd21596f33ebb210f153730b7887a5dee7fea4d15a2")
+    version("11.0.3", sha256="1e6560b802aa84e17255b83987dfc98a1457154fb603d0f340fae978238de3e7")
+    version("11.0.2", sha256="661e1ab6f42e58910472d771e76ffd16a2b411398eed70f39808762db707799e")
+    version("11.0.1", sha256="fa76d0774346b7347b1fb1424e1c1e0502264a83e185995f3c462372994f84fa")
+    version("11.0.0", sha256="04d11d4d9041507e7f86f48eb45c36430f2b6544a74c0ccaff632ac51d9644f1")
+    version("10.7.4", sha256="7e381f8945c75388b79af98b95be31a0933641c1af8d74ab9b6cf39d5aa98317")
+    version("10.7.3", sha256="8615d93bd4178d34f31e19d67bc81720af67cdab1c8425af8523858dcddcf65b")
+    version("10.7.2", sha256="593fc85883a361487b17548ba00553501f66a811b0a79039276bb75ad59528cf")
     version('10.7.1', sha256='2aa7cb4b231081e0a35d84c707be8f35e4edc4e97aad2b233943515476955293')
     version('10.7.0', sha256='c991a139210c7f194720c900b149405090058c00beb5a0d2fac5c40c42a262d4')
     version('10.6.3', sha256='bf96d6d38e6a0deabb6fb6232eb00e46153134da645715d636b9b7b4490193d3')
@@ -30,9 +43,14 @@ class Geant4(CMakePackage):
     version('10.4.0', sha256='e919b9b0a88476e00c0b18ab65d40e6a714b55ee4778f66bac32a5396c22aa74')
     version('10.3.3', sha256='bcd36a453da44de9368d1d61b0144031a58e4b43a6d2d875e19085f2700a89d8')
 
-    _cxxstd_values = ('11', '14', '17')
+    _cxxstd_values = (
+            conditional('11', '14', when="@:10"),
+            conditional('17', when="@10.4.1:"),
+            conditional('20', when="@10.7.0:"),
+    )
+
     variant('cxxstd',
-            default=_cxxstd_values[0],
+            default='11',
             values=_cxxstd_values,
             multi=False,
             description='Use the specified C++ standard when building.')
@@ -47,17 +65,29 @@ class Geant4(CMakePackage):
 
     depends_on('cmake@3.5:', type='build')
     depends_on('cmake@3.8:', type='build', when='@10.6.0:')
+    depends_on('cmake@3.16:', type='build', when='@11.0.0:')
 
-    depends_on('geant4-data@10.7.1', when='@10.7.1')
-    depends_on('geant4-data@10.7.0', when='@10.7.0')
-    depends_on('geant4-data@10.6.3', when='@10.6.3')
-    depends_on('geant4-data@10.6.2', when='@10.6.2')
-    depends_on('geant4-data@10.6.1', when='@10.6.1')
-    depends_on('geant4-data@10.6.0', when='@10.6.0')
-    depends_on('geant4-data@10.5.1', when='@10.5.1')
-    depends_on('geant4-data@10.4.3', when='@10.4.3')
-    depends_on('geant4-data@10.4.0', when='@10.4.0')
-    depends_on('geant4-data@10.3.3', when='@10.3.3')
+
+    for _vers in [
+        "10.0.4",
+        "10.3.3",
+        "10.4.0",
+        "10.4.3",
+        "10.5.1",
+        "10.6.0",
+        "10.6.1",
+        "10.6.2",
+        "10.6.3",
+        "10.7.0",
+        "10.7.1",
+        "10.7.2",
+        "10.7.3",
+        "10.7.4",
+        "11.0",
+        "11.1",
+        "11.2:",
+    ]:
+        depends_on("geant4-data@" + _vers, type="run", when="@" + _vers)
 
     depends_on("expat")
     depends_on("zlib")
@@ -68,32 +98,40 @@ class Geant4(CMakePackage):
     conflicts('+python', when='@:10.6.1',
               msg='Geant4 <= 10.6.1 cannot be built with Python bindings')
 
-    for std in _cxxstd_values:
-        # CLHEP version requirements to be reviewed
-        depends_on('clhep@2.4.4.0: cxxstd=' + std,
-                   when='@10.7.0: cxxstd=' + std)
+    def std_when(values):
+        for v in values:
+            if isinstance(v, _ConditionalVariantValues):
+                for c in v:
+                    yield (c.value, c.when)
+            else:
+                yield (v, "")
 
-        depends_on('clhep@2.3.3.0: cxxstd=' + std,
-                   when='@10.3.3:10.6.99 cxxstd=' + std)
+    for _std, _when in std_when(_cxxstd_values):
+        # CLHEP version requirements to be reviewed
+        depends_on('clhep@2.4.4.0: cxxstd=' + _std,
+                   when='@10.7.0: cxxstd=' + _std)
+
+        depends_on('clhep@2.3.3.0: cxxstd=' + _std,
+                   when='@10.3.3:10.6.99 cxxstd=' + _std)
 
         # Spack only supports Xerces-c 3 and above, so no version req
-        depends_on('xerces-c cxxstd=' + std, when='cxxstd=' + std)
+        depends_on('xerces-c cxxstd=' + _std, when='cxxstd=' + _std)
 
         # Vecgeom specific versions for each Geant4 version
-        depends_on('vecgeom@1.1.8 cxxstd=' + std,
-                   when='@10.7.0: +vecgeom cxxstd=' + std)
-        depends_on('vecgeom@1.1.5 cxxstd=' + std,
-                   when='@10.6.0:10.6.99 +vecgeom cxxstd=' + std)
-        depends_on('vecgeom@1.1.0 cxxstd=' + std,
-                   when='@10.5.0:10.5.99 +vecgeom cxxstd=' + std)
-        depends_on('vecgeom@0.5.2 cxxstd=' + std,
-                   when='@10.4.0:10.4.99 +vecgeom cxxstd=' + std)
-        depends_on('vecgeom@0.3rc cxxstd=' + std,
-                   when='@10.3.0:10.3.99 +vecgeom cxxstd=' + std)
+        depends_on('vecgeom@1.1.8 cxxstd=' + _std,
+                   when='@10.7.0: +vecgeom cxxstd=' + _std)
+        depends_on('vecgeom@1.1.5 cxxstd=' + _std,
+                   when='@10.6.0:10.6.99 +vecgeom cxxstd=' + _std)
+        depends_on('vecgeom@1.1.0 cxxstd=' + _std,
+                   when='@10.5.0:10.5.99 +vecgeom cxxstd=' + _std)
+        depends_on('vecgeom@0.5.2 cxxstd=' + _std,
+                   when='@10.4.0:10.4.99 +vecgeom cxxstd=' + _std)
+        depends_on('vecgeom@0.3rc cxxstd=' + _std,
+                   when='@10.3.0:10.3.99 +vecgeom cxxstd=' + _std)
 
         # Boost.python, conflict handled earlier
-        depends_on('boost@1.70: +python cxxstd=' + std,
-                   when='+python cxxstd=' + std)
+        depends_on('boost@1.70: +python cxxstd=' + _std,
+                   when='+python cxxstd=' + _std)
 
     # Visualization driver dependencies
     depends_on("gl", when='+opengl')

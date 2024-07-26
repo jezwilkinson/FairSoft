@@ -19,6 +19,9 @@ class Pythia6(CMakePackage):
     version('428-alice1', sha256='b14e82870d3aa33d6fa07f4b1f4d17f1ab80a37d753f91ca6322352b397cb244')
 
     patch('add_missing_extern_keyword.patch')
+    variant("root", default=False, description="Build extra (non OEM) code to allow use by Root.")
+
+
 
     def cmake_args(self):
         args=[]
