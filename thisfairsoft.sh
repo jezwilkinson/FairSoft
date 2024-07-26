@@ -83,7 +83,6 @@ fairsoft_repo() {
 	fi
 }
 
-fairsoft_repo "fairsoft_backports" "fairsoft-backports"
 fairsoft_repo "fairsoft" "fairsoft"
 
 if $fairsoft_do_setup

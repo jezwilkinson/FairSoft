@@ -1,4 +1,4 @@
-packages:
-  all:
-    providers:
-      blas: [fairsoft_backports.openblas]
+#packages:
+#  all:
+#    providers:
+#      blas: [fairsoft_backports.openblas]
