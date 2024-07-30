@@ -16,6 +16,7 @@ class Fairroot(CMakePackage):
     git = "https://github.com/FairRootGroup/FairRoot.git"
 
     version('develop', branch='dev')
+    version('18.8.2', sha256='0bc9bafd9583f8a4c92977647c1eb360d66f45fbc6c81a15c5a1613640934684')
     version('18.6.2', sha256='45762788db5cb705a312fb1b32066677ae8036f588152989554dd8899a42e791')
     version('18.6.1', sha256='8a590b30a3b8dadf6361ea21c073efb9f458f20bf3f25b6937a153068a492998')
     version('18.4.1', sha256='d8455c4bb705a2d5989ad947ffc50bb2f0d00affb649bb5e30d9463b5be0b490')
@@ -30,11 +31,13 @@ class Fairroot(CMakePackage):
             description='Install examples')
 
     depends_on('cmake@3.13.4:', type='build')
-    depends_on('boost@1.68.0: +container')
-    depends_on('faircmakemodules@0.2:', when='@19:')
+    depends_on('boost@1.68.0: +container +serialization')
+    depends_on('faircmakemodules@0.2:', when='@18:')
     depends_on('fairlogger@1.4.0:')
     depends_on('fairmq@1.4.11:')
     depends_on('fairsoft-config', when='@:18,develop')
+    depends_on('fairsoft-bundle')
+   
     depends_on('flatbuffers')
     depends_on('geant3', when="+sim")
     depends_on('geant4', when="+sim")
@@ -87,7 +90,7 @@ class Fairroot(CMakePackage):
 
         if self.spec.satisfies('^boost@:1.69.99'):
             options.append('-DBoost_NO_BOOST_CMAKE=ON')
-
+        options.append('-DBUILD_PROOF_SUPPORT=OFF')
         return options
 
     def common_env_setup(self, env):

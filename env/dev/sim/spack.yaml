@@ -5,7 +5,7 @@ spack:
   - geant4@11.2.0~threads
   - fairsoft-bundle@master +graphics
   - fairroot+sim+examples
-  - odc
+#  - odc
   view: false
   packages:
     all:
