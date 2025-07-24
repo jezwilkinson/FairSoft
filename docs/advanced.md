@@ -4,7 +4,7 @@ This guide assumes that the user is somewhat familiar with Spack. See the [Spack
 
 ## Configure Spack directories
 
-Over time, the install tree and source cache of Spack may grow quite large (multiple Gigabytes). With the following commands it is possible to specify locations outside of the FairSoft git repo:
+Over time, the install tree and source cache of Spack may grow quite large (multiple Gigabytes). With the following commands it is possible to specify locations outside of the Spack repo:
 
 ```
 $ spack config --scope site add config:install_tree:/path/of/your/choice

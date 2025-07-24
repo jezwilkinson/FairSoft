@@ -8,8 +8,8 @@ Choose between the classic (called "Legacy") installation method or the new Spac
 
 | **Legacy (Recommended)** | **Spack (EXPERIMENTAL)** |
 | -- | -- |
-| This is the classic bash/cmake based setup system. | This is an ongoing standardization and modernization effort based on Spack (which itself is still under heavy development). Most things are already working. For early adopters. |
-| Releases are reflected in the git history via tags and branches, e.g.: `jan24`, `nov22`, `apr21p2`, `apr21_patches` | Always use the latest `dev` branch. Multiple releases are described within the metadata contained in the repo (read on in the Installation instructions on how to select a release). |
+| This is the classic bash/cmake based setup system. | This is an ongoing standardization and modernization effort based on Spack. For early adopters. |
+| Releases are reflected in the git history via tags and branches, e.g.: `jan24`, `nov22`, `apr21p2`, `apr21_patches` | Releases are available as the package "fairsoft-bundle", starting from the "may25" tag, in the format "YYYY-MM" (e.g. 2025-05). See `spack info fairsoft-bundle` for available versions. |
 | ► [continue](legacy/README.md) | ► [continue](docs/README.md) |
 
 ## Installation of pre-compiled Binaries
