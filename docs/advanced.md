@@ -119,23 +119,6 @@ arch=linux-ubuntu16.04-x86_64: describes the system for which this package shoul
 which is a 64bit version Ubuntu Linux 16.04. And finally it is described wehere the
 installed package is found, in this case it is /usr.
 
-### Use needed system package on macOS 10.12
-
-We encountered compilation problems on macosx 10.12. At least on this system it was impossible to
-compile the mesa package which provides the OpenGL support. The problem with python was that
-packages which depends on python showed compilation errors which were related to the python
-installation. The compilation of python itself worked without problems.
-
-To solve theses issues we add the following lines:
-
-```bash
-  mesa:
-    paths:
-      mesa~llvm@19.0.4%clang@9.0.0-apple arch=darwin-sierra-x86_64: /usr/local/Cellar/mesa/19.0.2
-  python:
-    paths:
-      python+shared@3.7.3%clang@9.0.0-apple arch=darwin-sierra-x86_64: /usr/local/Cellar/python/3.7.3
-```
 
 ## Use existing Spack installation
 
@@ -201,10 +184,10 @@ which will install FairRoot and all its dependencies. This will install the vers
 If it is intended to install aspecific version this version has to be specified as parameter:
 
 ```bash
-spack install fairroot@v18.0.6
+spack install fairroot@v18.8.2
 ```
 
-At the time of writing there are three versions available: dev, RC_v18.1.0 and v18.0.6.
+At the time of writing there are two versions available: develop, and 18.8.2.
 
 To have a look at the complete dependency tree one can use the following command:
 
@@ -215,10 +198,10 @@ spack spec fairroot
 or
 
 ```bash
-spack spec fairroot@v18.0.6
+spack spec fairroot@v18.8.2
 ```
 
-to et the information for a specific version.
+to get the information for a specific version.
 
 Since the dependency tree of FairRoot is rather large this step can take quite some time. If you are using an
 existing external Spack installation with all needed packages already installed the step only takes some seconds.

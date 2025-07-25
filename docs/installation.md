@@ -155,5 +155,3 @@ faircmakemodules@1.0.0              g4channeling@1.0         g4ndl@4.7.1       g
 ==> 101 installed packages
 ==> 0 concretized packages to be installed (show with `spack find -c`)
 ```
-
-To see the full dependency tree including all variants, use the `spack spec` command.
