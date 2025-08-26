@@ -2,7 +2,7 @@
 
 ### Preface
 
-The Spack-based FairSoft distribution is currently in an EXPERIMENTAL state. FairSoft releases are available via the `fairsoft-bundle` package, starting from the May25 release. In the mid-term future we plan to retire the CMake-based "Legacy" FairSoft and fully switch to the Spack-based one. The installation has been tested across multiple operating systems and architectures (Ubuntu 24.04, AlmaLinux 9, Mac OSX (x86 and ARM)).
+Spack is a package manager for scientific software that handles dependencies and build options via recipes. FairSoft releases are available via the `fairsoft-bundle` package, starting from the May25 release. In the mid-term future we plan to retire the CMake-based "Legacy" FairSoft and fully switch to the Spack-based one. The installation has been tested across multiple operating systems and architectures (Ubuntu 24.04, AlmaLinux 9, Mac OSX (x86_64 and ARM)).
 
 ### Introduction
 

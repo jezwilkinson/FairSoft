@@ -7,8 +7,10 @@ In the following sections you can find instructions to install software assumed 
 Find the distro-specific setup in the `%post` section in the following [singularity](https://sylabs.io/docs/) container definition files:
 
 * **Fedora**: [33](../test/container/fedora.33.def)
+* **AlmaLinux (Alma9)**: Use the same `dnf` commands from Fedora above
 * **CentOS**: [7](../test/container/centos.7.def)
 * **Debian**: [10](../test/container/debian.10.def)
+* **Ubuntu**: Use the same `apt-get` commands from Debian above
 * **openSUSE**: [15.2](../test/container/opensuse.15.2.def)
 
 ## macOS
